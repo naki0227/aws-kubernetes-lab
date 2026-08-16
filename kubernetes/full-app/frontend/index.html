@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kubernetes Full App</title>
+</head>
+<body>
+  <h1>Kubernetes Full App</h1>
+
+  <button id="load">
+    DBからメッセージ取得
+  </button>
+
+  <pre id="result">まだ取得していません</pre>
+
+  <script>
+    const button = document.getElementById("load");
+    const result = document.getElementById("result");
+
+    button.addEventListener("click", async () => {
+      result.textContent = "取得中...";
+
+      try {
+        const response = await fetch("/api");
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        result.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        result.textContent = `エラー: ${error.message}`;
+      }
+    });
+  </script>
+</body>
+</html>

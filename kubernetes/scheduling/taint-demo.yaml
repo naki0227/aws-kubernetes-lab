@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: taint-demo
+spec:
+  nodeSelector:
+    zone: a
+  containers:
+    - name: busybox
+      image: busybox:1.36
+      command: ["sh", "-c", "sleep 3600"]
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: gpu
+      effect: NoSchedule

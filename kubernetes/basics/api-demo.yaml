@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-demo
+  template:
+    metadata:
+      labels:
+        app: api-demo
+    spec:
+      containers:
+        - name: http-echo
+          image: hashicorp/http-echo
+          args:
+            - "-text=$(APP_MESSAGE)"
+          env:
+            - name: APP_MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: APP_MESSAGE
+
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-secret
+                  key: API_KEY
+
+          ports:
+            - containerPort: 5678

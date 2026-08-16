@@ -1,0 +1,35 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+terraform.tfvars
+*.auto.tfvars
+
+# Environment / secrets
+.env
+.env.*
+*.pem
+*.key
+kubeconfig
+secret.yaml
+*-secret.yaml
+
+# AWS / local auth artifacts
+.aws/
+credentials
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Build artifacts
+dist/
+build/
+bin/

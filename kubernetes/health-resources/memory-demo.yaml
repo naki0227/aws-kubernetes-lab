@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-demo
+spec:
+  containers:
+    - name: memory-demo
+      image: python:3.13-alpine
+      command:
+        - python
+        - -c
+        - |
+          a = []
+          while True:
+              a.append("x" * 1024 * 1024)
+      resources:
+        requests:
+          memory: "16Mi"
+        limits:
+          memory: "32Mi"

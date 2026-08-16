@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: anti-affinity-demo
+
+spec:
+  replicas: 3
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+
+  selector:
+    matchLabels:
+      app: anti-affinity-demo
+
+  template:
+    metadata:
+      labels:
+        app: anti-affinity-demo
+
+    spec:
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - anti-affinity-demo
+              topologyKey: kubernetes.io/hostname
+
+      containers:
+        - name: busybox
+          image: busybox:1.36
+          command: ["sh", "-c", "sleep 3600"]
