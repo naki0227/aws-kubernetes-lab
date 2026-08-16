@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 env:
-  AWS_REGION: ap-notheast-1
+  AWS_REGION: ap-northeast-1
   TF_WORKING_DIR: terraform/dev
 
 jobs:
