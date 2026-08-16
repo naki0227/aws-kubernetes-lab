@@ -256,6 +256,29 @@ resource "aws_iam_role_policy" "github_actions_deploy" {
         ]
 
         Resource = module.eks.cluster_arn
+      },
+      {
+        Effect = "Allow"
+
+        Action = [
+          "s3:ListBucket"
+        ]
+
+        Resource = "arn:aws:s3:::aws-kubernetes-lab-tfstate-naki0227-20260816"
+      },
+      {
+        Effect = "Allow"
+
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ]
+
+        Resource = [
+          "arn:aws:s3:::aws-kubernetes-lab-tfstate-naki0227-20260816/dev/terraform.tfstate",
+          "arn:aws:s3:::aws-kubernetes-lab-tfstate-naki0227-20260816/dev/terraform.tfstate.tflock"
+        ]
       }
     ]
   })
