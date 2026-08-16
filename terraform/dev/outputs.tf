@@ -25,3 +25,7 @@ output "backend_ecr_repository_url" {
 output "github_actions_deploy_role_arn" {
   value = aws_iam_role.github_actions_deploy.arn
 }
+
+output "github_actions_terraform_plan_role_arn" {
+  value = aws_iam_role.github_actions_terraform_plan.arn
+}

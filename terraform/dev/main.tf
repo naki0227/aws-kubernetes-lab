@@ -305,3 +305,49 @@ resource "aws_eks_access_policy_association" "github_actions_deploy" {
     aws_eks_access_entry.github_actions_deploy
   ]
 }
+
+resource "aws_iam_role" "github_actions_terraform_plan" {
+  name = "${var.cluster_name}-github-actions-terraform-plan"
+
+  assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "github_actions_terraform_plan_readonly" {
+  role       = aws_iam_role.github_actions_terraform_plan.name
+  policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
+}
+
+resource "aws_iam_role_policy" "github_actions_terraform_plan_state" {
+  name = "${var.cluster_name}-github-actions-terraform-plan-state"
+  role = aws_iam_role.github_actions_terraform_plan.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+      {
+        Effect = "Allow"
+
+        Action = [
+          "s3:ListBucket"
+        ]
+
+        Resource = "arn:aws:s3:::aws-kubernetes-lab-tfstate-naki0227-20260816"
+      },
+      {
+        Effect = "Allow"
+
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ]
+
+        Resource = [
+          "arn:aws:s3:::aws-kubernetes-lab-tfstate-naki0227-20260816/dev/terraform.tfstate",
+          "arn:aws:s3:::aws-kubernetes-lab-tfstate-naki0227-20260816/dev/terraform.tfstate.tflock"
+        ]
+      }
+    ]
+  })
+}

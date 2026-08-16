@@ -33,7 +33,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::713395823754:role/aws-kubernetes-lab-github-actions-deploy
+          role-to-assume: arn:aws:iam::713395823754:role/aws-kubernetes-lab-github-actions-terraform-plan
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Terraform
