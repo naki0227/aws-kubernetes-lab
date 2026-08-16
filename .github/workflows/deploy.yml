@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "kubernetes/full-app/frontend/**"
+      - "kubernetes/full-app/backend/**"
+      - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
 permissions:

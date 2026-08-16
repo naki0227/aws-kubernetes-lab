@@ -6,6 +6,22 @@ AWS、Kubernetes、Terraform、GitHub Actions を使って、Amazon EKS 上に�
 
 ローカル Kubernetes で学んだ内容を Amazon EKS 上に移し、ローカル環境とクラウド環境で何が共通し、何が AWS 固有の実装に置き換わるのかを確認しながら構築しました。
 
+## Overview
+
+- Amazon EKS 上に Frontend / Go Backend / PostgreSQL を構築
+- Terraform で VPC / EKS / ECR / IAM / Pod Identity を管理
+- GitHub Actions + OIDC で Application Deploy と Terraform Plan を自動化
+- PostgreSQL は EBS に永続化
+- ALB / Ingress / NetworkPolicy / RBAC / HPA まで検証
+
+## Key Design Decisions
+
+- Application Deploy と Terraform Plan の IAM Role を分離
+- AWS Access Key を GitHub に保存せず OIDC を利用
+- Terraform State を S3 Remote Backend で管理
+- PostgreSQL Secret の実値は Git 管理外
+- Kubernetes から生成される AWS Resource と Terraform 管理 Resource を意識して分離
+
 ## Architecture
 
 アプリケーションへのアクセスは以下の流れです。
@@ -133,7 +149,7 @@ GitHub Actions 上では local profile を利用せず、OIDC から取得した
 
 Application と Terraform では Workflow を分離しています。
 
-Application Deployment Workflow では main branch への push を起点に処理を実行します。
+Application Deployment Workflow では main branch への 特定のファイルの push を起点に処理を実行します。
 
 GitHub Actions
 → GitHub OIDC
@@ -260,6 +276,9 @@ Browser
 という通信経路になります。
 
 AWS Load Balancer Controller には EKS Pod Identity を利用して AWS IAM Role を付与しています。
+
+AWS Load Balancer Controller の ServiceAccount は現在手動で作成しているため、
+今後 Helm / Terraform 側へ管理を移して完全に再現可能な構成にする予定です。
 
 ## NetworkPolicy
 
@@ -423,7 +442,7 @@ Terraform State は S3 Backend に保存されます。
 
 Application Image の変更は GitHub Actions から自動 Deployment されます。
 
-main branch に push すると frontend / backend Image が Build され、Amazon ECR に Push されます。
+main branch への frontend / backend 関連ファイルの push を検知すると frontend / backend Image が Build され、Amazon ECR に Push されます。
 
 その後、GitHub Actions が Amazon EKS に接続し、Deployment の Container Image を新しい Image に変更します。
 
