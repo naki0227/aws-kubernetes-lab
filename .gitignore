@@ -2,9 +2,9 @@
 .terraform/
 *.tfstate
 *.tfstate.*
-.terraform.lock.hcl
 terraform.tfvars
 *.auto.tfvars
+tfplan
 
 # Environment / secrets
 .env
@@ -14,6 +14,7 @@ terraform.tfvars
 kubeconfig
 secret.yaml
 *-secret.yaml
+!*-secret.example.yaml
 
 # AWS / local auth artifacts
 .aws/

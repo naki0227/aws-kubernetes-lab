@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: full-app-frontend:v3
+          image: 713395823754.dkr.ecr.ap-northeast-1.amazonaws.com/aws-kubernetes-lab-frontend:v1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
