@@ -10,6 +10,12 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  AWS_REGION: ap-northeast-1
+  EKS_CLUSTER_NAME: aws-kubernetes-lab
+  FRONTEND_REPOSITORY: aws-kubernetes-lab-frontend
+  BACKEND_REPOSITORY: aws-kubernetes-lab-backend
+
 jobs:
   oidc-test:
     runs-on: ubuntu-latest
@@ -22,7 +28,48 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::713395823754:role/aws-kubernetes-lab-github-actions-deploy
-          aws-region: ap-northeast-1
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set image tag
+        run: echo "IMAGE_TAG=${GITHUB_SHA}" >> "$GITHUB_ENV"
+
+      - name: Build and push frontend
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            --push \
+            -t ${{ steps.login-ecr.outputs.registry }}/${{ env.FRONTEND_REPOSITORY }}:${IMAGE_TAG} \
+            kubernetes/full-app/frontend
+
+      - name: Build and push backend
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            --push \
+            -t ${{ steps.login-ecr.outputs.registry }}/${{ env.BACKEND_REPOSITORY }}:${IMAGE_TAG} \
+            kubernetes/full-app/backend
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --region "${AWS_REGION}" \
+            --name "${EKS_CLUSTER_NAME}"
+
+      - name: Deploy frontend
+        run: |
+          kubectl set image deployment/frontend \
+            backend=${{ steps.login-ecr.outputs.registry }}/${{ env.FRONTEND_REPOSITORY }}:${IMAGE_TAG}
+
+      - name: Deploy backend
+        run: |
+          kubectl set image deployment/backend \
+            backend=${{ steps.login-ecr.outputs.registry }}/${{ env.BACKEND_REPOSITORY }}:${IMAGE_TAG}
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/frontend --timeout=180s
+          kubectl rollout status deployment/backend --timeout=180s

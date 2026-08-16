@@ -202,7 +202,7 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:naki0227/aws-kubernetes-lab:ref:refs/heads/main"
+        "repo:naki0227@210952803/aws-kubernetes-lab@1335654249:ref:refs/heads/main"
       ]
     }
   }
