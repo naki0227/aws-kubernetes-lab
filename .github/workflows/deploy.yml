@@ -62,7 +62,7 @@ jobs:
       - name: Deploy frontend
         run: |
           kubectl set image deployment/frontend \
-            backend=${{ steps.login-ecr.outputs.registry }}/${{ env.FRONTEND_REPOSITORY }}:${IMAGE_TAG}
+            frontend=${{ steps.login-ecr.outputs.registry }}/${{ env.FRONTEND_REPOSITORY }}:${IMAGE_TAG}
 
       - name: Deploy backend
         run: |
