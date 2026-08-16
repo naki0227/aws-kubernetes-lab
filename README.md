@@ -22,6 +22,13 @@ AWS、Kubernetes、Terraform、GitHub Actions を使って、Amazon EKS 上に�
 - PostgreSQL Secret の実値は Git 管理外
 - Kubernetes から生成される AWS Resource と Terraform 管理 Resource を意識して分離
 
+## Learning Notes
+
+このリポジトリを通して学んだ AWS / Terraform / Kubernetes / EKS / CI/CD の内容を、
+構成図・トラブルシューティング・実験結果を含めてまとめています。
+
+- [AWS / Terraform / Kubernetes 完全学習ノート](./docs/aws-terraform-kubernetes-notes.md)
+
 ## Architecture
 
 アプリケーションへのアクセスは以下の流れです。
