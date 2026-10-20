@@ -28,7 +28,7 @@ spec:
               app: backend
       containers:
         - name: backend
-          image: 713395823754.dkr.ecr.ap-northeast-1.amazonaws.com/aws-kubernetes-lab-backend:v1
+          image: <AWS_ACCOUNT_ID>.dkr.ecr.ap-northeast-1.amazonaws.com/aws-kubernetes-lab-backend:v1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
