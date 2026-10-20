@@ -540,3 +540,10 @@ Terraform → S3 Remote State → AWS Infrastructure
 ローカル Kubernetes と Amazon EKS では Kubernetes Resource 自体の考え方は共通ですが、Load Balancer、Storage、Identity、Network などの実装部分が AWS の Service に置き換わることも確認できました。
 
 この Repository は、Kubernetes、AWS、Terraform、CI/CD を個別に学ぶのではなく、それらを一つの Application Infrastructure として接続して理解することを目的としています。
+
+## AWS アカウント ID について
+
+公開リポジトリなので、AWS のアカウント ID は書いていません。
+
+- GitHub Actions は、リポジトリの Variables に `AWS_ACCOUNT_ID` を設定すると動きます。
+- `kubernetes/` のマニフェストにある `<AWS_ACCOUNT_ID>` は、適用する前に自分のアカウント ID に置き換えてください。
